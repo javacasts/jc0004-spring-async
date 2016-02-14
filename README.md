@@ -71,6 +71,14 @@ first start all the queries, then process the result.
 We end up with this code to run [the example][async]:
 
 ```java
+    @Async
+    public Future<String> longTimeRunningMethod() throws InterruptedException {
+        Thread.sleep(2 * 1000);
+        return new AsyncResult<String>(Thread.currentThread().getName());
+    }
+```
+
+```java
     public void run(ApplicationArguments arg0) throws Exception {
         List<Future<String>> results = new ArrayList<Future<String>>();
         long started = System.nanoTime();
