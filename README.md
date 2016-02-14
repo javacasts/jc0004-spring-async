@@ -6,12 +6,12 @@ What do you need async calls for?
 
 Imagine you have a site comparing different prices of different online-shops.
 It takes around 2 seconds to fetch the prices of each site. You start small,
-compair the prices of three online shops, so it will take around 6 seconds for
+compare the prices of three online shops, so it will take around 6 seconds for
 each product, if you make them one by one. When you grow and check the prices
-of 10 shots it will already take you 20 seconds. That's a long time. The thing
-is there's no need to wait until the first shop has finished to check the next
-one, as you do not need the result of ony of thos to get the results of the
-others.  
+of 10 shops it will already take you 20 seconds.  
+That's a long time. There's no need to wait until the first shop has finished
+to check the next one, as you do not need the result of ony of thos to get the
+results of the others.   
 So instead of running them one by one, you can run them in parallel. Assuming
 enough power an network-bandwidth it doesn't matter how many shops you query,
 when you query them in parallel the longes will define the time it takes for
@@ -40,7 +40,8 @@ We run this using the following code:
     public void run(ApplicationArguments arg0) throws Exception {
         long started = System.nanoTime();
         for (int i = 0; i < 4; i++) {
-            LOG.info(processor.longTimeRunningMethod());
+            LOG.info("Received response: " +
+                processor.longTimeRunningMethod());
         }
         LOG.info("processing took "
                 + Math.round((System.nanoTime() - started) / 1000000000)
@@ -59,11 +60,22 @@ Implement parallel processing
 -----------------------------
 
 Luckily spring does provide us with a simple solution to run methods
-asynchronous.  First spring needs to be told to use async, this is done by
-annotation the application with `@EnableAsync`, then the method is annotated
-with `@Async`.  There's only one thing left to do. The method now needs to
-return a `Future`.  Future is only a interface, so we will return a
-`AsyncReuslt`.  
+asynchronous. First spring needs to be told to use async, this is done by
+annotating the application with `@EnableAsync`, and the method is annotated
+with `@Async`. There's only one thing left to do. The method cannot return a
+String any more. We need to return a construct that represents the execution
+and provides the result once the execution has finished. Spring defines the
+`Future` for that purpose. `Future` is only a interface, so the method returns
+a implementation, `AsyncReuslt`.
+
+```java
+    @Async
+    public Future<String> longTimeRunningMethod() throws InterruptedException {
+        Thread.sleep(2 * 1000);
+        return new AsyncResult<String>(Thread.currentThread().getName());
+    }
+```
+
 If we run it like this nothing will have changed. This is because we try to get
 the result of each request before starting the next request. So we need to
 first start all the queries, then process the result.
@@ -86,7 +98,7 @@ We end up with this code to run [the example][async]:
             results.add(processor.longTimeRunningMethod());
         }
         for (Future<String> result : results) {
-            LOG.info(result.get());
+            LOG.info("Received response: " + result.get());
         }
         LOG.info("processing took "
                 + Math.round((System.nanoTime() - started) / 1000000000)
