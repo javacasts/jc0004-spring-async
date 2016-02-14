@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,6 +16,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @SpringBootApplication
 public class AsyncApplication implements ApplicationRunner {
+
+    private static final Logger LOG = LoggerFactory
+            .getLogger(AsyncApplication.class);
 
     @Autowired
     private AsyncProcessor processor;
@@ -29,7 +34,7 @@ public class AsyncApplication implements ApplicationRunner {
             results.add(processor.longTimeRunningMethod());
         }
         for (Future<String> result : results) {
-            System.out.println(result.get());
+            LOG.info(result.get());
         }
     }
 }
