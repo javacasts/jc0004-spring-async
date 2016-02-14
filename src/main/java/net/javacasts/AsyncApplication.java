@@ -1,5 +1,7 @@
 package net.javacasts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -8,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AsyncApplication implements ApplicationRunner {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncApplication.class);
 
     @Autowired
     private AsyncProcessor processor;
@@ -19,7 +23,7 @@ public class AsyncApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments arg0) throws Exception {
         for (int i = 0; i < 4; i++) {
-            System.out.println(processor.longTimeRunningMethod());
+            LOG.info(processor.longTimeRunningMethod());
         }
     }
 }
