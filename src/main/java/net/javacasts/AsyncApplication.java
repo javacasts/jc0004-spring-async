@@ -30,11 +30,15 @@ public class AsyncApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments arg0) throws Exception {
         List<Future<String>> results = new ArrayList<Future<String>>();
+        long started = System.nanoTime();
         for (int i = 0; i < 4; i++) {
             results.add(processor.longTimeRunningMethod());
         }
         for (Future<String> result : results) {
             LOG.info(result.get());
         }
+        LOG.info("processing took "
+                + Math.round((System.nanoTime() - started) / 1000000000)
+                + " seconds");
     }
 }
