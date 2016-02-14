@@ -11,7 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AsyncApplication implements ApplicationRunner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncApplication.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(AsyncApplication.class);
 
     @Autowired
     private AsyncProcessor processor;
@@ -22,8 +23,12 @@ public class AsyncApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments arg0) throws Exception {
+        long started = System.nanoTime();
         for (int i = 0; i < 4; i++) {
             LOG.info(processor.longTimeRunningMethod());
         }
+        LOG.info("processing took "
+                + Math.round((System.nanoTime() - started) / 1000000000)
+                + " seconds");
     }
 }
