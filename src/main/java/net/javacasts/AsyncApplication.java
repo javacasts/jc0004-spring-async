@@ -40,5 +40,6 @@ public class AsyncApplication implements ApplicationRunner {
         LOG.info("processing took "
                 + Math.round((System.nanoTime() - started) / 1000000000)
                 + " seconds");
+	System.exit(0);
     }
 }
