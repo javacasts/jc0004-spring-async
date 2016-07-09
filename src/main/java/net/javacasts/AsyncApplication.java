@@ -25,7 +25,8 @@ public class AsyncApplication implements ApplicationRunner {
     public void run(ApplicationArguments arg0) throws Exception {
         long started = System.nanoTime();
         for (int i = 0; i < 4; i++) {
-            LOG.info(processor.longTimeRunningMethod());
+            LOG.info("Received reponse: " +
+                processor.longTimeRunningMethod());
         }
         LOG.info("processing took "
                 + Math.round((System.nanoTime() - started) / 1000000000)
