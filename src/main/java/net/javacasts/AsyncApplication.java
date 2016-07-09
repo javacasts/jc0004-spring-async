@@ -35,7 +35,7 @@ public class AsyncApplication implements ApplicationRunner {
             results.add(processor.longTimeRunningMethod());
         }
         for (Future<String> result : results) {
-            LOG.info(result.get());
+            LOG.info("Received reponse: " + result.get());
         }
         LOG.info("processing took "
                 + Math.round((System.nanoTime() - started) / 1000000000)
